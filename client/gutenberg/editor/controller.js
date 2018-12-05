@@ -19,6 +19,7 @@ import { setAllSitesSelected } from 'state/ui/actions';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { EDITOR_START } from 'state/action-types';
 import { initGutenberg } from './init';
+import { JETPACK_DATA_PATH } from 'gutenberg/extensions/presets/jetpack/utils/get-jetpack-data';
 import { requestFromUrl, requestGutenbergBlockAvailability } from 'state/data-getters';
 import { waitForData } from 'state/data-layer/http-data';
 import { getSiteFragment } from 'lib/route';
@@ -105,7 +106,7 @@ export const loadGutenbergBlockAvailability = async ( context, next ) => {
 		blockAvailability: () => requestGutenbergBlockAvailability( siteFragment ),
 	} ).then( ( { blockAvailability } ) => {
 		if ( 'success' === blockAvailability.state && blockAvailability.data ) {
-			set( window, [ 'Jetpack_Editor_Initial_State', 'available_blocks' ], blockAvailability.data );
+			set( window, [ JETPACK_DATA_PATH, 'available_blocks' ], blockAvailability.data );
 		}
 
 		next();
