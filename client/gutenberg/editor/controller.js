@@ -18,8 +18,9 @@ import { setAllSitesSelected } from 'state/ui/actions';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { EDITOR_START } from 'state/action-types';
 import { initGutenberg } from './init';
-import { requestFromUrl } from 'state/data-getters';
+import { requestFromUrl, requestGutenbergBlockAvailability } from 'state/data-getters';
 import { waitForData } from 'state/data-layer/http-data';
+import { getSiteFragment } from 'lib/route';
 
 function determinePostType( context ) {
 	if ( context.path.startsWith( '/block-editor/post/' ) ) {
@@ -90,6 +91,21 @@ export const loadTranslations = ( context, next ) => {
 				setLocaleData( localeData, domain );
 			}
 		} );
+
+		next();
+	} );
+};
+
+export const loadGutenbergBlockAvailability = async ( context, next ) => {
+	const { path } = context;
+	const siteFragment = getSiteFragment( path );
+
+	waitForData( {
+		blockAvailability: () => requestGutenbergBlockAvailability( siteFragment ),
+	} ).then( ( { blockAvailability } ) => {
+		if ( 'success' === blockAvailability.state && blockAvailability.data ) {
+			window.Jetpack_Editor_Initial_State.available_blocks = blockAvailability.data;
+		}
 
 		next();
 	} );
