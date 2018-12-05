@@ -13,7 +13,6 @@ import { setLocaleData } from '@wordpress/i18n';
  * Internal dependencies
  */
 import getCurrentLocaleSlug from 'state/selectors/get-current-locale-slug';
-import refreshRegistrations from '../extensions/presets/jetpack/utils/refresh-registrations';
 import { getCurrentUserId } from 'state/current-user/selectors';
 import { setAllSitesSelected } from 'state/ui/actions';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
@@ -151,6 +150,8 @@ export const post = async ( context, next ) => {
 
 	const GutenbergEditor = initGutenberg( userId, siteSlug );
 
+	const refreshRegistrations = require( '../extensions/presets/jetpack/utils/refresh-registrations' )
+		.default;
 	refreshRegistrations();
 
 	context.primary = (
